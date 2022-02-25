@@ -26,10 +26,12 @@ RUN apt install -y autoconf automake autotools-dev curl python3 libmpc-dev \
 # https://github.com/riscv-collab/riscv-gnu-toolchain
 # の手順に従って実施
 RUN git clone https://github.com/riscv/riscv-gnu-toolchain ; \
-    cd riscv-gnu-toolchain;				   \
+    pushd riscv-gnu-toolchain;				   \
     ./configure --prefix=${PREFIX};			   \
     make -j `nproc`;					   \
-    make install;
+    make install;                                          \
+    popd ;                                                 \
+    rm -fr riscv-gnu-toolchain;
 #
 #QEMUのインストール
 #
@@ -46,9 +48,8 @@ RUN apt install install -y giflib-tools libpng-dev libtiff-dev libgtk-3-dev \
     libdaxctl-dev ; \
     wget https://download.qemu.org/qemu-6.1.0.tar.xz ; \
     tar xf qemu-6.1.0.tar.xz ; \
-    cd qemu-6.1.0;             \
-    mkdir build;               \
-    cd build;                  \
+    mkdir -p qemu-6.1.0/build; \
+    pushd qemu-6.1.0/build;    \
     ../configure               \
     --prefix=${PREFIX}         \
     --target-list=riscv64-softmmu,riscv32-softmmu,riscv64-linux-user,riscv32-linux-user \
@@ -64,7 +65,9 @@ RUN apt install install -y giflib-tools libpng-dev libtiff-dev libgtk-3-dev \
     --disable-pie                       \
     --disable-werror ;                  \
     make -j `nproc` V=1 ;	        \
-    make install;
+    make install;                       \
+    popd ;                              \
+    rm -fr qemu-6.1.0;
 
 # インストールファイル表示
 RUN ls -lR ${PREFIX}
