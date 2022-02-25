@@ -49,24 +49,15 @@ RUN apt install -y giflib-tools libpng-dev libtiff-dev libgtk-3-dev \
     libdaxctl-dev ;
 RUN wget -q https://download.qemu.org/qemu-6.1.0.tar.xz ;
 RUN tar xf qemu-6.1.0.tar.xz ;
+RUN ls ;
 RUN mkdir -p qemu-6.1.0/build; \
     cd qemu-6.1.0/build;    \
+    ls ;                    \
     ../configure               \
     --prefix=${PREFIX}         \
-    --target-list=riscv64-softmmu,riscv32-softmmu,riscv64-linux-user,riscv32-linux-user \
-    --enable-system                     \
-    --enable-user                       \
-    --enable-linux-user                 \
-    --enable-tcg-interpreter            \
-    --enable-modules                    \
-    --enable-debug-tcg                  \
-    --enable-debug-info                 \
-    --enable-membarrier                 \
-    --enable-profiler                   \
-    --disable-pie                       \
     --disable-werror ;                  \
     make -j `nproc` V=1 ;	        \
-    make install;                       \
+    make install ;                     \
     cd ..;                              \
     rm -fr qemu-6.1.0;
 
