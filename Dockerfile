@@ -10,5 +10,5 @@ RUN apt update; \
     git clone https://github.com/riscv/riscv-gnu-toolchain ; \
     cd riscv-gnu-toolchain;				   \
     ./configure --prefix=/opt/riscv64;			   \
-    make;						   \
+    make -j `nproc`;						   \
     make install;
