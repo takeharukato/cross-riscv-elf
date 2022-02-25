@@ -7,8 +7,9 @@ FROM ubuntu
 LABEL maintainer="Takeharu KATO"
 # tzdataインストール時にタイムゾーンを聞かないようにする
 ENV DEBIAN_FRONTEND=noninteractive
-ENV PREFIX=/opt/riscv64
-
+ENV PREFIX=/opt/riscv
+ENV QEMU_VERSION=6.2.0
+ENV QEMU_TARGETS=riscv32-softmmu,riscv64-softmmu,riscv32-linux-user,riscv64-linux-user
 #
 #事前準備
 #
@@ -23,16 +24,6 @@ RUN apt update; \
 RUN apt install -y autoconf automake autotools-dev curl python3 libmpc-dev \
     libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf \
     libtool patchutils bc zlib1g-dev libexpat-dev;
-# クロスコンパイラのインストール
-# https://github.com/riscv-collab/riscv-gnu-toolchain
-# の手順に従って実施
-# RUN git clone https://github.com/riscv/riscv-gnu-toolchain ; \
-#     cd riscv-gnu-toolchain;				   \
-#     ./configure --prefix=${PREFIX};			   \
-#     make -j `nproc`;					   \
-#     make install;                                          \
-#     cd ..;                                                 \
-#     rm -fr riscv-gnu-toolchain;
 #
 #QEMUのインストール
 #
@@ -47,22 +38,46 @@ RUN apt install -y giflib-tools libpng-dev libtiff-dev libgtk-3-dev \
     libsasl2-dev libpmem-dev libudev-dev libcapstone-dev librdmacm-dev \
     libibverbs-dev libibumad-dev libvirt-dev libffi-dev libbpfcc-dev \
     libdaxctl-dev ;
-RUN wget -q https://download.qemu.org/qemu-6.1.0.tar.xz ;
-RUN tar xf qemu-6.1.0.tar.xz ;
-RUN mkdir -p qemu-6.1.0/build; \
-    cd qemu-6.1.0/build;    \
-    ../configure               \
-    --prefix=${PREFIX}         \
-    --target-list=riscv32-softmmu,riscv64-softmmu,riscv32-linux-user,riscv64-linux-user \
+RUN wget -q https://download.qemu.org/${QEMU_VERSION}.tar.xz ;
+RUN tar xf ${QEMU_VERSION}.tar.xz ;
+RUN mkdir -p ${QEMU_VERSION}/build;     \
+    cd ${QEMU_VERSION}/build;           \
+    ../configure                        \
+    --prefix=${PREFIX}                  \
+    --target-list=${QEMU_TARGETS}       \
     --enable-tcg-interpreter            \
     --enable-modules                    \
     --enable-membarrier                 \
     --enable-profiler                   \
     --disable-werror ;                  \
     make -j `nproc` V=1 ;	        \
-    make install ;                     \
+    make install ;                      \
     cd ../..;                           \
-    rm -fr qemu-6.1.0;
+    rm -fr ${QEMU_VERSION};
+
+# クロスコンパイラのインストール
+# https://github.com/riscv-collab/riscv-gnu-toolchain
+# の手順に従って実施
+
+# 64bit版/32bit版をそれぞれ構築
+RUN git clone https://github.com/riscv/riscv-gnu-toolchain ; \
+    mkdir -p riscv-gnu-toolchain/build64 ;                 \
+    mkdir -p riscv-gnu-toolchain/build32 ;                 \
+    cd riscv-gnu-toolchain/build64;			   \
+    ../configure --prefix=${PREFIX};			   \
+    make -j `nproc`;					   \
+    make install;                                          \
+    cd ../..;                                              \
+    cd riscv-gnu-toolchain/build32;			   \
+    ../configure                                           \
+    --prefix=${PREFIX} 			                   \
+    --with-arch=rv32gc                                     \
+    --with-abi=ilp32d ;                                    \
+    make -j `nproc`;					   \
+    make install;                                          \
+    cd ../..;                                              \
+    rm -fr riscv-gnu-toolchain;
+
 
 # インストールファイル表示
 RUN ls -lR ${PREFIX}
