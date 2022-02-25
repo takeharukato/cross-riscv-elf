@@ -1,5 +1,5 @@
 FROM ubuntu
-LABEL maintainer="takeharu1219@ybb.ne.jp"
+LABEL maintainer="Takeharu KATO"
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update; \
     apt install -y language-pack-ja-base language-pack-ja; \
