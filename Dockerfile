@@ -36,7 +36,7 @@ RUN git clone https://github.com/riscv/riscv-gnu-toolchain ; \
 #
 #QEMUのインストール
 #
-RUN apt install install -y giflib-tools libpng-dev libtiff-dev libgtk-3-dev \
+RUN apt install -y giflib-tools libpng-dev libtiff-dev libgtk-3-dev \
     libncursesw6 libncurses5-dev libncursesw5-dev libgnutls30 nettle-dev \
     libgcrypt20-dev libsdl2-dev libguestfs-tools python3-brlapi \
     bluez-tools bluez-hcidump bluez libusb-dev libcap-dev libcap-ng-dev \
