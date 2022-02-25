@@ -1,6 +1,9 @@
 # cross-riscv-elf
 Cross compile environment for RISC-V
 
+/opt/riscvにRISC-V用のgccクロスコンパイラをインストールしたLinux環境
+(Ubuntu)のコンテナイメージです。
+
 # イメージ取得方法
 
 以下のコマンドを実行して, コンパイル環境のコンテナイメージを取得します。

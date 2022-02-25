@@ -8,7 +8,7 @@ LABEL maintainer="Takeharu KATO"
 # tzdataインストール時にタイムゾーンを聞かないようにする
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PREFIX=/opt/riscv
-ENV QEMU_VERSION=6.2.0
+ENV QEMU_VERSION=qemu-6.2.0
 ENV QEMU_TARGETS=riscv32-softmmu,riscv64-softmmu,riscv32-linux-user,riscv64-linux-user
 #
 #事前準備
