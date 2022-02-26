@@ -13,6 +13,8 @@ ENV PREFIX=/opt/riscv
 ENV QEMU_VERSION=qemu-6.2.0
 # QEmuのターゲット
 ENV QEMU_TARGETS=riscv32-softmmu,riscv64-softmmu,riscv32-linux-user,riscv64-linux-user
+# PATHの設定
+ENV PATH=${PATH}:${PREFIX}/bin
 #
 #事前準備
 #
